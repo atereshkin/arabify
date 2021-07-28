@@ -201,3 +201,6 @@ function phoneticToArabic(phoneticText){
     return result;
 }
 
+function cyrillicToArabic(s) {
+    return phoneticToArabic(cyrillicToPhonetic(s));
+}
