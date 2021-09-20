@@ -6,11 +6,13 @@ var isIota = (c) => iota.has(c);
 
 iotaToRegular = {'е' : 'э' , 'ё' : 'о' , 'і' : 'і' , 'ю' : 'у', 'я' : 'а'};
 
-var consonants = new Set(['б','в','г','д','ж','з','й','к','л','м','н','п','р','с','т','ў','ф','х','ц','ч','ш']);
+var consonants = new Set(['б','в','г','д','ж','з','й','к','л','м','н','п','р','с','т','ф','х','ц','ч','ш']);
 var isConsonant = (c) => consonants.has(c);
 
+var isSemivowel = (c) => c == 'ў';
+
 function isWord(c) {
-    return isVowel(c) || isConsonant(c) || c == '\'' || c == 'ь';
+    return isVowel(c) || isConsonant(c) || c == '\'' || c == 'ь' || c == 'ў';
 }
 
 function isSoft(s, i) {
@@ -78,7 +80,7 @@ function cyrillicToPhonetic(s) {
 	    result[result.length] = s[i];
 	    continue;
 	}
-	if (isVowel(s[i])) {
+	if (isVowel(s[i]) || isSemivowel(s[i])) {
 	    if (isIota(s[i])) {
 		if (s[i] != 'i' && (i == 0 || !isWord(s[i-1]) || !isConsonant(s[i-1])))
 		    result[result.length] = 'й';
@@ -107,7 +109,7 @@ function cyrillicToPhonetic(s) {
 	    if (dz||dzh)
 		i += 1;
 	    result[result.length] = ph;
-	}
+	} 
 	
     }
     return result;
@@ -189,7 +191,8 @@ function phoneticToArabic(phoneticText){
 	    result += p2a[p];
 	    if (dbl)
 		result += '\u0651'; // Шадда, пазначае падваенне
-	    if (isConsonant(phoneticText[i][0]) && (i == phoneticText.length - 1 || !isWord(phoneticText[i+1][0]) || isConsonant(phoneticText[i+1][0]))) {
+	    if ((isConsonant(phoneticText[i][0]) || isSemivowel(phoneticText[i][0])) &&
+		(i == phoneticText.length - 1 || !isWord(phoneticText[i+1][0]) || isConsonant(phoneticText[i+1][0]) || isSemivowel(phoneticText[i+1][0]))) {
 		result += '\u0652'; //Сукун, адсутнасць галоснага
 	    }
 	} else if (p in punct2a){
