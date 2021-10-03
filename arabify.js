@@ -18,6 +18,8 @@ function isWord(c) {
 function isSoft(s, i) {
     if (i >= s.length - 1 || !isWord(s[i+1]) || !isConsonant(s[i]))
 	return false;
+    if (s[i] == 'й')
+	return true;
     var next = s[i+1];
     return next == 'ь' || isIota(next) ||
 	(s[i] == 'д' && next == 'з' && isSoft(s, i+1)) ||
@@ -82,7 +84,7 @@ function cyrillicToPhonetic(s) {
 	}
 	if (isVowel(s[i]) || isSemivowel(s[i])) {
 	    if (isIota(s[i])) {
-		if (s[i] != 'i' && (i == 0 || !isWord(s[i-1]) || !isConsonant(s[i-1])))
+		if (s[i] != 'i' && (i == 0 || !isWord(s[i-1]) || !isConsonant(s[i-1]) || s[i-1] == 'й'))
 		    result[result.length] = 'й';
 		result[result.length] = iotaToRegular[s[i]];
 	    }
@@ -100,7 +102,7 @@ function cyrillicToPhonetic(s) {
 	    } else {
 		ph = s[i];
 	    }
-	    if (isSoft(s, i))
+	    if (isSoft(s, i) && s[i] != 'й')
 		ph += '\'';
 	    if (isDouble(s,i)) {
 		ph += '~';
